@@ -27,7 +27,7 @@ export default function Home() {
     <main className="min-h-screen bg-[#f7f3ee] text-[#171717]">
       <nav className="flex items-center justify-between px-6 py-6 md:px-12 border-b border-black/10">
         <div className="text-xl font-bold tracking-[0.25em]">
-          AURA
+          Fullsense
         </div>
 
         <div className="hidden md:flex gap-8 text-sm">
@@ -231,7 +231,7 @@ export default function Home() {
       </section>
 
       <footer className="border-t border-black/10 px-6 md:px-12 py-8 flex flex-col md:flex-row justify-between gap-4 text-sm text-black/50">
-        <p>© 2026 AURA Perfumería</p>
+        <p>© 2026 Fullsense Perfumería</p>
         <p>Perfumes que dejan huella.</p>
       </footer>
     </main>
