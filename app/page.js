@@ -1,4 +1,7 @@
 import { supabase } from "../lib/supabase";
+import ProductCatalog from "./ProductCatalog";
+
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const { data: products, error } = await supabase
@@ -14,11 +17,10 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-[#f7f3ee] text-[#171717]">
+
+      {/* NAVEGACIÓN */}
       <nav className="flex items-center justify-between px-6 py-5 md:px-12 border-b border-black/10">
-        <a
-          href="#inicio"
-          className="flex items-center gap-3 group"
-        >
+        <a href="#inicio" className="flex items-center gap-3 group">
           <img
             src="/logo-fullsense.png"
             alt="Logo Fullsense"
@@ -62,6 +64,7 @@ export default async function Home() {
         </a>
       </nav>
 
+      {/* INICIO */}
       <section
         id="inicio"
         className="min-h-[75vh] flex items-center justify-center px-6 py-20"
@@ -99,127 +102,10 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="px-6 md:px-12 py-12 border-y border-black/10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          <div className="py-6">
-            <p className="text-2xl">✦</p>
-            <p className="mt-2 font-medium">Diseñador</p>
-          </div>
+      {/* CATEGORÍAS + CATÁLOGO */}
+      <ProductCatalog perfumes={perfumes} />
 
-          <div className="py-6">
-            <p className="text-2xl">✦</p>
-            <p className="mt-2 font-medium">Árabes</p>
-          </div>
-
-          <div className="py-6">
-            <p className="text-2xl">✦</p>
-            <p className="mt-2 font-medium">Masculinos</p>
-          </div>
-
-          <div className="py-6">
-            <p className="text-2xl">✦</p>
-            <p className="mt-2 font-medium">Femeninos</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="catalogo" className="px-6 md:px-12 py-24">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-black/50">
-              Selección
-            </p>
-
-            <h2 className="mt-3 text-4xl md:text-5xl font-semibold">
-              Nuestros perfumes
-            </h2>
-          </div>
-
-          <p className="max-w-md text-black/60">
-            Una selección de fragancias para diferentes estilos,
-            personalidades y ocasiones.
-          </p>
-        </div>
-
-        {perfumes.length === 0 ? (
-          <p className="text-center text-black/50">
-            No hay perfumes disponibles en este momento.
-          </p>
-        ) : (
-          <div className="grid md:grid-cols-3 gap-8">
-            {perfumes.map((perfume) => {
-              const precioFormateado = new Intl.NumberFormat("es-CO", {
-                style: "currency",
-                currency: "COP",
-                maximumFractionDigits: 0,
-              }).format(perfume.price);
-
-              const mensajeWhatsApp = encodeURIComponent(
-                `Hola, estoy interesado en ${perfume.name} de ${perfume.brand}, ${perfume.size_ml} ml, precio ${precioFormateado}.`
-              );
-
-              return (
-                <article
-                  key={perfume.id}
-                  className="group bg-white rounded-3xl overflow-hidden border border-black/5 hover:shadow-xl transition"
-                >
-                  <div className="h-80 bg-[#e9e1d7] flex items-center justify-center p-6">
-                    <img
-                      src={perfume.image_url}
-                      alt={`${perfume.name} de ${perfume.brand}`}
-                      className="h-full w-full object-contain group-hover:scale-105 transition duration-500"
-                    />
-                  </div>
-
-                  <div className="p-6">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p className="text-xs uppercase tracking-wider text-black/40">
-                          {perfume.type}
-                        </p>
-
-                        <h3 className="mt-1 text-xl font-semibold">
-                          {perfume.name}
-                        </h3>
-
-                        <p className="mt-1 text-sm text-black/50">
-                          {perfume.brand}
-                        </p>
-                      </div>
-
-                      <p className="font-semibold whitespace-nowrap">
-                        {precioFormateado}
-                      </p>
-                    </div>
-
-                    <p className="mt-4 text-sm leading-6 text-black/60">
-                      {perfume.description}
-                    </p>
-
-                    <div className="mt-4 flex items-center justify-between text-sm text-black/50">
-                      <span>{perfume.category}</span>
-
-                      {perfume.size_ml && (
-                        <span>{perfume.size_ml} ml</span>
-                      )}
-                    </div>
-
-                    <a
-                      href={`https://wa.me/573151878609?text=${mensajeWhatsApp}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block mt-6 rounded-full bg-black px-5 py-3 text-center text-sm text-white hover:bg-black/80 transition"
-                    >
-                      Consultar por WhatsApp
-                    </a>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        )}
-      </section>
-
+      {/* NOSOTROS */}
       <section
         id="nosotros"
         className="bg-black text-white px-6 md:px-12 py-24"
@@ -242,6 +128,7 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* CONTACTO */}
       <section
         id="contacto"
         className="px-6 md:px-12 py-24 text-center"
@@ -269,12 +156,10 @@ export default async function Home() {
         </a>
       </section>
 
+      {/* FOOTER */}
       <footer className="border-t border-black/10 px-6 md:px-12 py-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
-          <a
-            href="#inicio"
-            className="flex items-center gap-3"
-          >
+          <a href="#inicio" className="flex items-center gap-3">
             <img
               src="/logo-fullsense.png"
               alt="Logo Fullsense"
