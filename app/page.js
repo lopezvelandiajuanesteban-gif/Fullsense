@@ -1,24 +1,33 @@
 const perfumes = [
   {
-    name: "Khamrah",
-    brand: "Lattafa",
-    price: "$189.900",
-    category: "Árabe",
-    description: "Dulce, cálido y envolvente. Una fragancia perfecta para destacar.",
+    name: "9 PM Night Out",
+    brand: "Afnan",
+    price: "$300.000",
+    category: "Hombre",
+    type: "Árabe",
+    image: "/perfumes/9pm-night-out.png",
+    description:
+      "Una fragancia intensa, dulce y sofisticada, ideal para la noche y ocasiones especiales.",
   },
   {
-    name: "Sauvage",
-    brand: "Dior",
-    price: "$420.000",
-    category: "Diseñador",
-    description: "Una fragancia fresca, intensa y masculina para cualquier ocasión.",
+    name: "Stronger With You Intensely",
+    brand: "Emporio Armani",
+    price: "$550.000",
+    category: "Hombre",
+    type: "Diseñador",
+    image: "/perfumes/stronger-with-you-intensely.png",
+    description:
+      "Una fragancia cálida, intensa y envolvente, perfecta para destacar y dejar huella.",
   },
   {
-    name: "Club de Nuit Intense Man",
+    name: "Yum Yum",
     brand: "Armaf",
-    price: "$229.900",
-    category: "Árabe",
-    description: "Elegante, potente y versátil. Ideal para quienes buscan dejar huella.",
+    price: "$260.000",
+    category: "Mujer",
+    type: "Árabe",
+    image: "/perfumes/yum-yum.png",
+    description:
+      "Una fragancia dulce, frutal y floral con un carácter femenino y elegante.",
   },
 ];
 
@@ -130,41 +139,41 @@ export default function Home() {
               key={perfume.name}
               className="group bg-white rounded-3xl overflow-hidden border border-black/5 hover:shadow-xl transition"
             >
-              <div className="h-80 bg-[#e9e1d7] flex items-center justify-center">
-                <div className="text-center">
-                  <p className="text-xs uppercase tracking-[0.3em] text-black/40">
-                    {perfume.brand}
-                  </p>
-
-                  <p className="mt-3 text-3xl font-semibold">
-                    {perfume.name}
-                  </p>
-
-                  <p className="mt-2 text-sm text-black/40">
-                    Imagen del perfume
-                  </p>
-                </div>
+              <div className="h-80 bg-[#e9e1d7] flex items-center justify-center p-6">
+                <img
+                  src={perfume.image}
+                  alt={`${perfume.name} de ${perfume.brand}`}
+                  className="h-full w-full object-contain group-hover:scale-105 transition duration-500"
+                />
               </div>
 
               <div className="p-6">
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-xs uppercase tracking-wider text-black/40">
-                      {perfume.category}
+                      {perfume.type}
                     </p>
 
                     <h3 className="mt-1 text-xl font-semibold">
                       {perfume.name}
                     </h3>
+
+                    <p className="mt-1 text-sm text-black/50">
+                      {perfume.brand}
+                    </p>
                   </div>
 
-                  <p className="font-semibold">
+                  <p className="font-semibold whitespace-nowrap">
                     {perfume.price}
                   </p>
                 </div>
 
                 <p className="mt-4 text-sm leading-6 text-black/60">
                   {perfume.description}
+                </p>
+
+                <p className="mt-4 text-xs uppercase tracking-wider text-black/40">
+                  {perfume.category}
                 </p>
 
                 <a
