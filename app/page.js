@@ -122,67 +122,75 @@ export default async function Home() {
           </p>
         ) : (
           <div className="grid md:grid-cols-3 gap-8">
-            {perfumes.map((perfume) => (
-              <article
-                key={perfume.id}
-                className="group bg-white rounded-3xl overflow-hidden border border-black/5 hover:shadow-xl transition"
-              >
-                <div className="h-80 bg-[#e9e1d7] flex items-center justify-center p-6">
-                  <img
-                    src={perfume.image_url}
-                    alt={`${perfume.name} de ${perfume.brand}`}
-                    className="h-full w-full object-contain group-hover:scale-105 transition duration-500"
-                  />
-                </div>
+            {perfumes.map((perfume) => {
+              const precioFormateado = new Intl.NumberFormat("es-CO", {
+                style: "currency",
+                currency: "COP",
+                maximumFractionDigits: 0,
+              }).format(perfume.price);
 
-                <div className="p-6">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-xs uppercase tracking-wider text-black/40">
-                        {perfume.type}
-                      </p>
+              const mensajeWhatsApp = encodeURIComponent(
+                `Hola, estoy interesado en ${perfume.name} de ${perfume.brand}, ${perfume.size_ml} ml, precio ${precioFormateado}.`
+              );
 
-                      <h3 className="mt-1 text-xl font-semibold">
-                        {perfume.name}
-                      </h3>
+              return (
+                <article
+                  key={perfume.id}
+                  className="group bg-white rounded-3xl overflow-hidden border border-black/5 hover:shadow-xl transition"
+                >
+                  <div className="h-80 bg-[#e9e1d7] flex items-center justify-center p-6">
+                    <img
+                      src={perfume.image_url}
+                      alt={`${perfume.name} de ${perfume.brand}`}
+                      className="h-full w-full object-contain group-hover:scale-105 transition duration-500"
+                    />
+                  </div>
 
-                      <p className="mt-1 text-sm text-black/50">
-                        {perfume.brand}
+                  <div className="p-6">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="text-xs uppercase tracking-wider text-black/40">
+                          {perfume.type}
+                        </p>
+
+                        <h3 className="mt-1 text-xl font-semibold">
+                          {perfume.name}
+                        </h3>
+
+                        <p className="mt-1 text-sm text-black/50">
+                          {perfume.brand}
+                        </p>
+                      </div>
+
+                      <p className="font-semibold whitespace-nowrap">
+                        {precioFormateado}
                       </p>
                     </div>
 
-                    <p className="font-semibold whitespace-nowrap">
-                      {new Intl.NumberFormat("es-CO", {
-                        style: "currency",
-                        currency: "COP",
-                        maximumFractionDigits: 0,
-                      }).format(perfume.price)}
+                    <p className="mt-4 text-sm leading-6 text-black/60">
+                      {perfume.description}
                     </p>
+
+                    <div className="mt-4 flex items-center justify-between text-sm text-black/50">
+                      <span>{perfume.category}</span>
+
+                      {perfume.size_ml && (
+                        <span>{perfume.size_ml} ml</span>
+                      )}
+                    </div>
+
+                    <a
+                      href={`https://wa.me/573151878609?text=${mensajeWhatsApp}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block mt-6 rounded-full bg-black px-5 py-3 text-center text-sm text-white hover:bg-black/80 transition"
+                    >
+                      Consultar por WhatsApp
+                    </a>
                   </div>
-
-                  <p className="mt-4 text-sm leading-6 text-black/60">
-                    {perfume.description}
-                  </p>
-
-                  <div className="mt-4 flex items-center justify-between text-sm text-black/50">
-                    <span>{perfume.category}</span>
-
-                    {perfume.size_ml && (
-                      <span>{perfume.size_ml} ml</span>
-                    )}
-                  </div>
-
-                  <a
-                    href="https://wa.me/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block mt-6 rounded-full bg-black px-5 py-3 text-center text-sm text-white hover:bg-black/80 transition"
-                  >
-                    Consultar por WhatsApp
-                  </a>
-                </div>
-              </article>
-            ))}
+                </article>
+              );
+            })}
           </div>
         )}
       </section>
@@ -227,7 +235,7 @@ export default async function Home() {
         </p>
 
         <a
-          href="https://wa.me/"
+          href="https://wa.me/573151878609?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20los%20perfumes%20de%20Fullsense."
           target="_blank"
           rel="noopener noreferrer"
           className="inline-block mt-8 rounded-full bg-black px-8 py-4 text-sm text-white hover:scale-105 transition"
