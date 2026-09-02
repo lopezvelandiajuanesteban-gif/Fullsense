@@ -1,37 +1,17 @@
-const perfumes = [
-  {
-    name: "9 PM Night Out",
-    brand: "Afnan",
-    price: "$300.000",
-    category: "Hombre",
-    type: "Árabe",
-    image: "/perfumes/9pm-night-out.png",
-    description:
-      "Una fragancia intensa, dulce y sofisticada, ideal para la noche y ocasiones especiales.",
-  },
-  {
-    name: "Stronger With You Intensely",
-    brand: "Emporio Armani",
-    price: "$550.000",
-    category: "Hombre",
-    type: "Diseñador",
-    image: "/perfumes/stronger-with-you-intensely.png",
-    description:
-      "Una fragancia cálida, intensa y envolvente, perfecta para destacar y dejar huella.",
-  },
-  {
-    name: "Yum Yum",
-    brand: "Armaf",
-    price: "$260.000",
-    category: "Mujer",
-    type: "Árabe",
-    image: "/perfumes/yum-yum.png",
-    description:
-      "Una fragancia dulce, frutal y floral con un carácter femenino y elegante.",
-  },
-];
+import { supabase } from "../lib/supabase";
 
-export default function Home() {
+export default async function Home() {
+  const { data: products, error } = await supabase
+    .from("PRODUCTS")
+    .select("*")
+    .order("id", { ascending: true });
+
+  if (error) {
+    console.error("Error cargando productos:", error);
+  }
+
+  const perfumes = products ?? [];
+
   return (
     <main className="min-h-screen bg-[#f7f3ee] text-[#171717]">
       <nav className="flex items-center justify-between px-6 py-6 md:px-12 border-b border-black/10">
@@ -43,12 +23,15 @@ export default function Home() {
           <a href="#inicio" className="hover:opacity-60 transition">
             Inicio
           </a>
+
           <a href="#catalogo" className="hover:opacity-60 transition">
             Catálogo
           </a>
+
           <a href="#nosotros" className="hover:opacity-60 transition">
             Nosotros
           </a>
+
           <a href="#contacto" className="hover:opacity-60 transition">
             Contacto
           </a>
@@ -133,61 +116,75 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {perfumes.map((perfume) => (
-            <article
-              key={perfume.name}
-              className="group bg-white rounded-3xl overflow-hidden border border-black/5 hover:shadow-xl transition"
-            >
-              <div className="h-80 bg-[#e9e1d7] flex items-center justify-center p-6">
-                <img
-                  src={perfume.image}
-                  alt={`${perfume.name} de ${perfume.brand}`}
-                  className="h-full w-full object-contain group-hover:scale-105 transition duration-500"
-                />
-              </div>
+        {perfumes.length === 0 ? (
+          <p className="text-center text-black/50">
+            No hay perfumes disponibles en este momento.
+          </p>
+        ) : (
+          <div className="grid md:grid-cols-3 gap-8">
+            {perfumes.map((perfume) => (
+              <article
+                key={perfume.id}
+                className="group bg-white rounded-3xl overflow-hidden border border-black/5 hover:shadow-xl transition"
+              >
+                <div className="h-80 bg-[#e9e1d7] flex items-center justify-center p-6">
+                  <img
+                    src={perfume.image_url}
+                    alt={`${perfume.name} de ${perfume.brand}`}
+                    className="h-full w-full object-contain group-hover:scale-105 transition duration-500"
+                  />
+                </div>
 
-              <div className="p-6">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-xs uppercase tracking-wider text-black/40">
-                      {perfume.type}
-                    </p>
+                <div className="p-6">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-xs uppercase tracking-wider text-black/40">
+                        {perfume.type}
+                      </p>
 
-                    <h3 className="mt-1 text-xl font-semibold">
-                      {perfume.name}
-                    </h3>
+                      <h3 className="mt-1 text-xl font-semibold">
+                        {perfume.name}
+                      </h3>
 
-                    <p className="mt-1 text-sm text-black/50">
-                      {perfume.brand}
+                      <p className="mt-1 text-sm text-black/50">
+                        {perfume.brand}
+                      </p>
+                    </div>
+
+                    <p className="font-semibold whitespace-nowrap">
+                      {new Intl.NumberFormat("es-CO", {
+                        style: "currency",
+                        currency: "COP",
+                        maximumFractionDigits: 0,
+                      }).format(perfume.price)}
                     </p>
                   </div>
 
-                  <p className="font-semibold whitespace-nowrap">
-                    {perfume.price}
+                  <p className="mt-4 text-sm leading-6 text-black/60">
+                    {perfume.description}
                   </p>
+
+                  <div className="mt-4 flex items-center justify-between text-sm text-black/50">
+                    <span>{perfume.category}</span>
+
+                    {perfume.size_ml && (
+                      <span>{perfume.size_ml} ml</span>
+                    )}
+                  </div>
+
+                  <a
+                    href="https://wa.me/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block mt-6 rounded-full bg-black px-5 py-3 text-center text-sm text-white hover:bg-black/80 transition"
+                  >
+                    Consultar por WhatsApp
+                  </a>
                 </div>
-
-                <p className="mt-4 text-sm leading-6 text-black/60">
-                  {perfume.description}
-                </p>
-
-                <p className="mt-4 text-xs uppercase tracking-wider text-black/40">
-                  {perfume.category}
-                </p>
-
-                <a
-                  href="https://wa.me/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block mt-6 rounded-full bg-black px-5 py-3 text-center text-sm text-white hover:bg-black/80 transition"
-                >
-                  Consultar por WhatsApp
-                </a>
-              </div>
-            </article>
-          ))}
-        </div>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
 
       <section
