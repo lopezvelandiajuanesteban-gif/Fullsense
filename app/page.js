@@ -14,10 +14,27 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-[#f7f3ee] text-[#171717]">
-      <nav className="flex items-center justify-between px-6 py-6 md:px-12 border-b border-black/10">
-        <div className="text-xl font-bold tracking-[0.25em]">
-          Fullsense
-        </div>
+      <nav className="flex items-center justify-between px-6 py-5 md:px-12 border-b border-black/10">
+        <a
+          href="#inicio"
+          className="flex items-center gap-3 group"
+        >
+          <img
+            src="/logo-fullsense.png"
+            alt="Logo Fullsense"
+            className="h-11 md:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+          />
+
+          <div className="flex flex-col leading-none">
+            <span className="text-lg md:text-xl font-semibold tracking-[0.2em] uppercase">
+              Fullsense
+            </span>
+
+            <span className="mt-1 text-[9px] md:text-[10px] uppercase tracking-[0.32em] text-black/40">
+              Perfumería
+            </span>
+          </div>
+        </a>
 
         <div className="hidden md:flex gap-8 text-sm">
           <a href="#inicio" className="hover:opacity-60 transition">
@@ -50,6 +67,14 @@ export default async function Home() {
         className="min-h-[75vh] flex items-center justify-center px-6 py-20"
       >
         <div className="max-w-4xl text-center">
+          <div className="mb-6 flex justify-center">
+            <img
+              src="/logo-fullsense.png"
+              alt="Fullsense"
+              className="h-20 md:h-24 w-auto object-contain opacity-90"
+            />
+          </div>
+
           <p className="mb-5 text-sm uppercase tracking-[0.4em] text-black/50">
             Perfumería
           </p>
@@ -244,9 +269,34 @@ export default async function Home() {
         </a>
       </section>
 
-      <footer className="border-t border-black/10 px-6 md:px-12 py-8 flex flex-col md:flex-row justify-between gap-4 text-sm text-black/50">
-        <p>© 2026 Fullsense Perfumería</p>
-        <p>Perfumes que dejan huella.</p>
+      <footer className="border-t border-black/10 px-6 md:px-12 py-10">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+          <a
+            href="#inicio"
+            className="flex items-center gap-3"
+          >
+            <img
+              src="/logo-fullsense.png"
+              alt="Logo Fullsense"
+              className="h-12 w-auto object-contain"
+            />
+
+            <div>
+              <p className="font-semibold tracking-[0.18em] uppercase text-black">
+                Fullsense
+              </p>
+
+              <p className="mt-1 text-xs text-black/40">
+                Perfumes que dejan huella.
+              </p>
+            </div>
+          </a>
+
+          <div className="text-sm text-black/50 md:text-right">
+            <p>© 2026 Fullsense Perfumería</p>
+            <p className="mt-1">Una fragancia. Una identidad.</p>
+          </div>
+        </div>
       </footer>
     </main>
   );
