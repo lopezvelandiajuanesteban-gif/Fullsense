@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function ProductCatalog({ perfumes }) {
   const [filtro, setFiltro] = useState("Todos");
@@ -114,47 +115,64 @@ export default function ProductCatalog({ perfumes }) {
                   key={perfume.id}
                   className="group bg-white rounded-3xl overflow-hidden border border-black/5 hover:shadow-xl transition"
                 >
-                  <div className="h-80 bg-[#e9e1d7] flex items-center justify-center p-6">
-                    <img
-                      src={perfume.image_url}
-                      alt={`${perfume.name} de ${perfume.brand}`}
-                      className="h-full w-full object-contain group-hover:scale-105 transition duration-500"
-                    />
-                  </div>
+                  <Link
+                    href={`/perfumes/${perfume.slug}`}
+                    className="block"
+                  >
+                    <div className="h-80 bg-[#e9e1d7] flex items-center justify-center p-6 cursor-pointer">
+                      <img
+                        src={perfume.image_url}
+                        alt={`${perfume.name} de ${perfume.brand}`}
+                        className="h-full w-full object-contain group-hover:scale-105 transition duration-500"
+                      />
+                    </div>
 
-                  <div className="p-6">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p className="text-xs uppercase tracking-wider text-black/40">
-                          {perfume.type}
-                        </p>
+                    <div className="p-6 pb-0 cursor-pointer">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <p className="text-xs uppercase tracking-wider text-black/40">
+                            {perfume.type}
+                          </p>
 
-                        <h3 className="mt-1 text-xl font-semibold">
-                          {perfume.name}
-                        </h3>
+                          <h3
+                            translate="no"
+                            className="notranslate mt-1 text-xl font-semibold group-hover:underline underline-offset-4"
+                          >
+                            {perfume.name}
+                          </h3>
 
-                        <p className="mt-1 text-sm text-black/50">
-                          {perfume.brand}
+                          <p
+                            translate="no"
+                            className="notranslate mt-1 text-sm text-black/50"
+                          >
+                            {perfume.brand}
+                          </p>
+                        </div>
+
+                        <p className="font-semibold whitespace-nowrap">
+                          {precioFormateado}
                         </p>
                       </div>
 
-                      <p className="font-semibold whitespace-nowrap">
-                        {precioFormateado}
+                      <p className="mt-4 text-sm leading-6 text-black/60">
+                        {perfume.description}
+                      </p>
+
+                      <div className="mt-4 flex items-center justify-between text-sm text-black/50">
+                        <span>{perfume.category}</span>
+
+                        {perfume.size_ml && (
+                          <span>{perfume.size_ml} ml</span>
+                        )}
+                      </div>
+
+                      <p className="mt-5 text-sm font-medium">
+                        Ver detalles →
                       </p>
                     </div>
+                  </Link>
 
-                    <p className="mt-4 text-sm leading-6 text-black/60">
-                      {perfume.description}
-                    </p>
-
-                    <div className="mt-4 flex items-center justify-between text-sm text-black/50">
-                      <span>{perfume.category}</span>
-
-                      {perfume.size_ml && (
-                        <span>{perfume.size_ml} ml</span>
-                      )}
-                    </div>
-
+                  <div className="px-6 pb-6">
                     <a
                       href={`https://wa.me/573151878609?text=${mensajeWhatsApp}`}
                       target="_blank"
