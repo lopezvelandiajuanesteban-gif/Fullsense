@@ -7,6 +7,7 @@ export default function AdminProductsPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -41,6 +42,36 @@ export default function AdminProductsPage() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     window.location.href = "/admin/login";
+  };
+
+  const handleDelete = async (product) => {
+    const confirmDelete = window.confirm(
+      `¿Seguro que quieres eliminar "${product.name}"? Esta acción no se puede deshacer.`
+    );
+
+    if (!confirmDelete) {
+      return;
+    }
+
+    setDeletingId(product.id);
+
+    const { error } = await supabase
+      .from("PRODUCTS")
+      .delete()
+      .eq("id", product.id);
+
+    if (error) {
+      console.error("Error eliminando producto:", error);
+      alert("No se pudo eliminar el perfume.");
+      setDeletingId(null);
+      return;
+    }
+
+    setProducts((prev) =>
+      prev.filter((item) => item.id !== product.id)
+    );
+
+    setDeletingId(null);
   };
 
   if (loading) {
@@ -169,6 +200,16 @@ export default function AdminProductsPage() {
                       >
                         Editar
                       </a>
+
+                      <button
+                        onClick={() => handleDelete(product)}
+                        disabled={deletingId === product.id}
+                        className="rounded-full border border-red-600 px-5 py-2 text-sm text-red-600 hover:bg-red-600 hover:text-white transition disabled:opacity-50"
+                      >
+                        {deletingId === product.id
+                          ? "Eliminando..."
+                          : "Eliminar"}
+                      </button>
                     </div>
                   </div>
                 );
