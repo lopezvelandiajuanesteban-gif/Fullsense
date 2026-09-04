@@ -38,8 +38,29 @@ export default function NewProductPage() {
     checkUser();
   }, []);
 
+  const createSlug = (text) => {
+    return text
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9\s-]/g, "")
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+
+    if (name === "name") {
+      setForm((prev) => ({
+        ...prev,
+        name: value,
+        slug: createSlug(value),
+      }));
+
+      return;
+    }
 
     setForm((prev) => ({
       ...prev,
@@ -268,11 +289,15 @@ export default function NewProductPage() {
               <input
                 name="slug"
                 value={form.slug}
-                onChange={handleChange}
+                readOnly
                 required
-                placeholder="nitro-red"
-                className="w-full rounded-xl border border-black/15 px-4 py-3 outline-none focus:border-black"
+                placeholder="se-genera-automaticamente"
+                className="w-full rounded-xl border border-black/10 bg-black/[0.03] px-4 py-3 text-black/60 outline-none"
               />
+
+              <p className="mt-2 text-xs text-black/40">
+                Se genera automáticamente a partir del nombre del perfume.
+              </p>
             </div>
 
             <label className="flex items-center gap-3">
