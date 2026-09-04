@@ -83,7 +83,10 @@ export default function AdminPage() {
           </p>
 
           <div className="mt-10 grid md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-3xl border border-black/10 p-6">
+            <a
+              href="/admin/products"
+              className="block bg-white rounded-3xl border border-black/10 p-6 hover:border-black/30 hover:shadow-sm transition"
+            >
               <p className="text-sm text-black/40">
                 Productos
               </p>
@@ -95,7 +98,7 @@ export default function AdminPage() {
               <p className="mt-3 text-sm text-black/60">
                 Agrega, edita y elimina perfumes.
               </p>
-            </div>
+            </a>
 
             <div className="bg-white rounded-3xl border border-black/10 p-6">
               <p className="text-sm text-black/40">
@@ -109,6 +112,10 @@ export default function AdminPage() {
               <p className="mt-3 text-sm text-black/60">
                 Gestiona las imágenes de los productos.
               </p>
+
+              <p className="mt-4 text-xs text-black/35">
+                Próximamente
+              </p>
             </div>
 
             <div className="bg-white rounded-3xl border border-black/10 p-6">
@@ -120,7 +127,7 @@ export default function AdminPage() {
                 Administrador
               </h2>
 
-              <p className="mt-3 text-sm text-black/60">
+              <p className="mt-3 text-sm text-black/60 break-all">
                 {user?.email}
               </p>
             </div>
