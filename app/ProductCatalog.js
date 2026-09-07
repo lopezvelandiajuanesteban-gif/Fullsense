@@ -17,44 +17,70 @@ export default function ProductCatalog({ perfumes }) {
     "Unisex",
   ];
 
-  const perfumesFiltrados = perfumes.filter((perfume) => {
-    const coincideCategoria = (() => {
-      if (filtro === "Todos") {
+  const perfumesFiltrados = perfumes
+    .filter((perfume) => {
+      const coincideCategoria = (() => {
+        if (filtro === "Todos") {
+          return true;
+        }
+
+        if (filtro === "Diseñador") {
+          return perfume.type?.toLowerCase() === "diseñador";
+        }
+
+        if (filtro === "Árabes") {
+          return perfume.type?.toLowerCase() === "árabe";
+        }
+
+        if (filtro === "Hombre") {
+          return perfume.category?.toLowerCase() === "hombre";
+        }
+
+        if (filtro === "Mujer") {
+          return perfume.category?.toLowerCase() === "mujer";
+        }
+
+        if (filtro === "Unisex") {
+          return perfume.category?.toLowerCase() === "unisex";
+        }
+
         return true;
+      })();
+
+      const textoBusqueda = busqueda.toLowerCase().trim();
+
+      const coincideBusqueda =
+        textoBusqueda === "" ||
+        perfume.name?.toLowerCase().includes(textoBusqueda) ||
+        perfume.brand?.toLowerCase().includes(textoBusqueda);
+
+      return coincideCategoria && coincideBusqueda;
+    })
+    .sort((a, b) => {
+      const prioridad = (perfume) => {
+        if (perfume.is_new && perfume.featured) {
+          return 3;
+        }
+
+        if (perfume.is_new) {
+          return 2;
+        }
+
+        if (perfume.featured) {
+          return 1;
+        }
+
+        return 0;
+      };
+
+      const diferencia = prioridad(b) - prioridad(a);
+
+      if (diferencia !== 0) {
+        return diferencia;
       }
 
-      if (filtro === "Diseñador") {
-        return perfume.type?.toLowerCase() === "diseñador";
-      }
-
-      if (filtro === "Árabes") {
-        return perfume.type?.toLowerCase() === "árabe";
-      }
-
-      if (filtro === "Hombre") {
-        return perfume.category?.toLowerCase() === "hombre";
-      }
-
-      if (filtro === "Mujer") {
-        return perfume.category?.toLowerCase() === "mujer";
-      }
-
-      if (filtro === "Unisex") {
-        return perfume.category?.toLowerCase() === "unisex";
-      }
-
-      return true;
-    })();
-
-    const textoBusqueda = busqueda.toLowerCase().trim();
-
-    const coincideBusqueda =
-      textoBusqueda === "" ||
-      perfume.name?.toLowerCase().includes(textoBusqueda) ||
-      perfume.brand?.toLowerCase().includes(textoBusqueda);
-
-    return coincideCategoria && coincideBusqueda;
-  });
+      return Number(b.id) - Number(a.id);
+    });
 
   const limpiarFiltros = () => {
     setFiltro("Todos");
@@ -234,6 +260,7 @@ export default function ProductCatalog({ perfumes }) {
                         className="h-full w-full object-contain group-hover:scale-105 transition duration-500"
                       />
 
+                      {/* DISPONIBILIDAD */}
                       <div className="absolute top-4 left-4">
                         {perfume.available ? (
                           <span className="rounded-full bg-white/90 px-3 py-1.5 text-xs font-medium text-green-700 border border-green-700/10">
@@ -245,6 +272,16 @@ export default function ProductCatalog({ perfumes }) {
                           </span>
                         )}
                       </div>
+
+                      {/* NUEVO */}
+                      {perfume.is_new && (
+                        <div className="absolute top-4 right-4">
+                          <span className="inline-flex items-center gap-2 rounded-full bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-md ring-1 ring-green-700/20">
+                            <span className="h-2 w-2 rounded-full bg-white"></span>
+                            Nuevo
+                          </span>
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex flex-1 flex-col p-6 pb-0 cursor-pointer">

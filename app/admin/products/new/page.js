@@ -19,6 +19,8 @@ export default function NewProductPage() {
     description: "",
     available: true,
     slug: "",
+    is_new: false,
+    featured: false,
   });
 
   useEffect(() => {
@@ -86,6 +88,8 @@ export default function NewProductPage() {
         description: form.description,
         available: form.available,
         slug: form.slug,
+        is_new: form.is_new,
+        featured: form.featured,
       },
     ]);
 
@@ -300,19 +304,78 @@ export default function NewProductPage() {
               </p>
             </div>
 
-            <label className="flex items-center gap-3">
-              <input
-                name="available"
-                type="checkbox"
-                checked={form.available}
-                onChange={handleChange}
-                className="h-4 w-4"
-              />
+            {/* ESTADO Y PRIORIDAD */}
+            <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-5">
+              <p className="text-sm font-medium">
+                Estado y prioridad
+              </p>
 
-              <span className="text-sm">
-                Producto disponible
-              </span>
-            </label>
+              <p className="mt-1 text-xs leading-5 text-black/45">
+                Estas opciones controlan cómo aparece el perfume en el catálogo.
+              </p>
+
+              <div className="mt-5 space-y-4">
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    name="available"
+                    type="checkbox"
+                    checked={form.available}
+                    onChange={handleChange}
+                    className="mt-1 h-4 w-4"
+                  />
+
+                  <div>
+                    <span className="text-sm font-medium">
+                      Producto disponible
+                    </span>
+
+                    <p className="mt-1 text-xs text-black/45">
+                      Permite que los clientes consulten el perfume por WhatsApp.
+                    </p>
+                  </div>
+                </label>
+
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    name="is_new"
+                    type="checkbox"
+                    checked={form.is_new}
+                    onChange={handleChange}
+                    className="mt-1 h-4 w-4"
+                  />
+
+                  <div>
+                    <span className="text-sm font-medium">
+                      Nuevo
+                    </span>
+
+                    <p className="mt-1 text-xs text-black/45">
+                      El perfume aparecerá arriba del catálogo y tendrá una etiqueta visible de “Nuevo”.
+                    </p>
+                  </div>
+                </label>
+
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    name="featured"
+                    type="checkbox"
+                    checked={form.featured}
+                    onChange={handleChange}
+                    className="mt-1 h-4 w-4"
+                  />
+
+                  <div>
+                    <span className="text-sm font-medium">
+                      Destacado
+                    </span>
+
+                    <p className="mt-1 text-xs text-black/45">
+                      El perfume tendrá prioridad para aparecer arriba, pero sin mostrar una etiqueta pública.
+                    </p>
+                  </div>
+                </label>
+              </div>
+            </div>
 
             {message && (
               <p className="text-sm">
