@@ -163,11 +163,6 @@ export default async function Home() {
             Una identidad.
           </h1>
 
-          <p className="mx-auto mt-7 max-w-xl text-lg leading-8 text-black/60">
-            Descubre una selección de perfumes pensados para expresar
-            tu estilo, personalidad y esencia.
-          </p>
-
           <div className="mt-10 flex flex-wrap justify-center gap-3">
             <a
               href="#catalogo"

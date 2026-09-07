@@ -70,6 +70,7 @@ export default function ProductCatalog({ perfumes }) {
 
   return (
     <>
+      {/* CATEGORÍAS */}
       <section className="px-6 md:px-12 py-10 border-y border-black/10">
         <div className="max-w-5xl mx-auto">
           <p className="mb-5 text-center text-xs uppercase tracking-[0.3em] text-black/40">
@@ -95,6 +96,7 @@ export default function ProductCatalog({ perfumes }) {
         </div>
       </section>
 
+      {/* CATÁLOGO */}
       <section id="catalogo" className="px-6 md:px-12 py-20 md:py-24">
         <div className="mb-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -176,12 +178,7 @@ export default function ProductCatalog({ perfumes }) {
             </div>
           </div>
 
-          <div className="mt-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <p className="max-w-md text-black/60">
-              Una selección de fragancias para diferentes estilos,
-              personalidades y ocasiones.
-            </p>
-
+          <div className="mt-5 flex justify-end">
             <p className="text-sm text-black/45">
               {perfumesFiltrados.length === 1
                 ? "1 perfume"
