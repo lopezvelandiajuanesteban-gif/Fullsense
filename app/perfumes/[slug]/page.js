@@ -1,70 +1,93 @@
- "use client";
-
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { notFound } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
 
-export default function PerfumePage() {
-  const params = useParams();
-  const slug = params.slug;
+export const dynamic = "force-dynamic";
 
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
+async function getProduct(slug) {
+  const { data, error } = await supabase
+    .from("PRODUCTS")
+    .select("*")
+    .eq("slug", slug)
+    .single();
 
-  useEffect(() => {
-    const loadProduct = async () => {
-      const { data, error } = await supabase
-        .from("PRODUCTS")
-        .select("*")
-        .eq("slug", slug)
-        .single();
-
-      if (error) {
-        console.error("Error cargando perfume:", error);
-        setErrorMessage("No se encontró este perfume.");
-        setLoading(false);
-        return;
-      }
-
-      setProduct(data);
-      setLoading(false);
-    };
-
-    if (slug) {
-      loadProduct();
-    }
-  }, [slug]);
-
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-[#f7f3ee] flex items-center justify-center">
-        <p className="text-black/50">Cargando perfume...</p>
-      </main>
-    );
+  if (error || !data) {
+    console.error("Error cargando perfume:", error);
+    return null;
   }
 
-  if (!product || errorMessage) {
-    return (
-      <main className="min-h-screen bg-[#f7f3ee] flex items-center justify-center px-6">
-        <div className="text-center">
-          <h1 className="text-3xl font-semibold">
-            Perfume no encontrado
-          </h1>
+  return data;
+}
 
-          <p className="mt-3 text-black/50">
-            Este producto no está disponible.
-          </p>
+/* =========================================
+   SEO AUTOMÁTICO DE CADA PERFUME
+========================================= */
 
-          <a
-            href="/"
-            className="inline-flex mt-6 rounded-full bg-black px-6 py-3 text-sm text-white"
-          >
-            Volver al catálogo
-          </a>
-        </div>
-      </main>
-    );
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const product = await getProduct(slug);
+
+  if (!product) {
+    return {
+      title: "Perfume no encontrado | Fullsense",
+      description:
+        "El perfume que buscas no está disponible actualmente en Fullsense.",
+    };
+  }
+
+  const title = `${product.name} | Fullsense`;
+
+  const description =
+    product.description ||
+    `${product.name} de ${product.brand}. Disponible en Fullsense Perfumería en Bucaramanga.`;
+
+  return {
+    title,
+    description,
+
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      siteName: "Fullsense Perfumería",
+
+      images: product.image_url
+        ? [
+            {
+              url: product.image_url,
+              alt: `${product.name} de ${product.brand}`,
+            },
+          ]
+        : [],
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+
+      images: product.image_url
+        ? [product.image_url]
+        : [],
+    },
+
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
+
+/* =========================================
+   PÁGINA DEL PERFUME
+========================================= */
+
+export default async function PerfumePage({ params }) {
+  const { slug } = await params;
+
+  const product = await getProduct(slug);
+
+  if (!product) {
+    notFound();
   }
 
   const price = new Intl.NumberFormat("es-CO", {
@@ -79,8 +102,11 @@ export default function PerfumePage() {
 
   return (
     <main className="min-h-screen bg-[#f7f3ee] text-[#171717]">
+
+      {/* HEADER */}
       <header className="px-6 py-5 md:px-12 border-b border-black/10 bg-white">
         <a href="/" className="flex items-center gap-3">
+
           <img
             src="/logo-fullsense.png"
             alt="Fullsense"
@@ -96,11 +122,15 @@ export default function PerfumePage() {
               Perfumería
             </p>
           </div>
+
         </a>
       </header>
 
+      {/* PRODUCTO */}
       <section className="px-6 md:px-12 py-10 md:py-16">
+
         <div className="max-w-6xl mx-auto">
+
           <a
             href="/"
             className="text-sm text-black/50 hover:text-black transition"
@@ -109,15 +139,21 @@ export default function PerfumePage() {
           </a>
 
           <div className="mt-8 grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+
+            {/* IMAGEN */}
             <div className="bg-white rounded-3xl border border-black/10 p-8 md:p-12 flex items-center justify-center">
+
               <img
                 src={product.image_url}
-                alt={product.name}
+                alt={`${product.name} de ${product.brand}`}
                 className="w-full max-w-md h-[420px] object-contain"
               />
+
             </div>
 
+            {/* INFORMACIÓN */}
             <div className="lg:pt-4">
+
               <p
                 translate="no"
                 className="notranslate text-sm uppercase tracking-[0.25em] text-black/40"
@@ -136,7 +172,9 @@ export default function PerfumePage() {
                 {price}
               </p>
 
+              {/* ETIQUETAS */}
               <div className="mt-6 flex flex-wrap gap-3">
+
                 <span className="rounded-full bg-white border border-black/10 px-4 py-2 text-sm">
                   {product.type}
                 </span>
@@ -148,9 +186,12 @@ export default function PerfumePage() {
                 <span className="rounded-full bg-white border border-black/10 px-4 py-2 text-sm">
                   {product.size_ml} ml
                 </span>
+
               </div>
 
+              {/* DESCRIPCIÓN */}
               <div className="mt-8">
+
                 <p className="text-sm uppercase tracking-[0.2em] text-black/40">
                   Descripción
                 </p>
@@ -158,9 +199,12 @@ export default function PerfumePage() {
                 <p className="mt-3 text-lg leading-8 text-black/70">
                   {product.description}
                 </p>
+
               </div>
 
+              {/* ENTREGA */}
               <div className="mt-8 rounded-2xl bg-white border border-black/10 p-5">
+
                 <p className="font-medium">
                   📍 Fullsense — Bucaramanga
                 </p>
@@ -168,9 +212,12 @@ export default function PerfumePage() {
                 <p className="mt-2 text-sm text-black/60">
                   Envíos gratis en Bucaramanga y área metropolitana.
                 </p>
+
               </div>
 
+              {/* DISPONIBILIDAD */}
               <div className="mt-6">
+
                 {product.available ? (
                   <p className="text-green-700 font-medium">
                     Disponible
@@ -180,8 +227,10 @@ export default function PerfumePage() {
                     Agotado
                   </p>
                 )}
+
               </div>
 
+              {/* WHATSAPP */}
               {product.available && (
                 <a
                   href={`https://wa.me/573151878609?text=${mensajeWhatsApp}`}
@@ -192,6 +241,7 @@ export default function PerfumePage() {
                   Consultar por WhatsApp
                 </a>
               )}
+
             </div>
           </div>
         </div>
