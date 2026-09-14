@@ -90,14 +90,20 @@ export default async function PerfumePage({ params }) {
     notFound();
   }
 
-  const price = new Intl.NumberFormat("es-CO", {
-    style: "currency",
-    currency: "COP",
-    maximumFractionDigits: 0,
-  }).format(product.price);
+  const tienePrecio = Number(product.price) > 0;
+
+  const price = tienePrecio
+    ? new Intl.NumberFormat("es-CO", {
+        style: "currency",
+        currency: "COP",
+        maximumFractionDigits: 0,
+      }).format(product.price)
+    : null;
 
   const mensajeWhatsApp = encodeURIComponent(
-    `Hola, estoy interesado en ${product.name} de ${product.brand}, ${product.size_ml} ml, precio ${price}.`
+    tienePrecio
+      ? `Hola, estoy interesado en ${product.name} de ${product.brand}, ${product.size_ml} ml, precio ${price}.`
+      : `Hola, estoy interesado en ${product.name} de ${product.brand}, ${product.size_ml} ml. ¿Me confirmas el precio y disponibilidad?`
   );
 
   return (
@@ -106,7 +112,6 @@ export default async function PerfumePage({ params }) {
       {/* HEADER */}
       <header className="px-6 py-5 md:px-12 border-b border-black/10 bg-white">
         <a href="/" className="flex items-center gap-3">
-
           <img
             src="/logo-fullsense.png"
             alt="Fullsense"
@@ -122,13 +127,11 @@ export default async function PerfumePage({ params }) {
               Perfumería
             </p>
           </div>
-
         </a>
       </header>
 
       {/* PRODUCTO */}
       <section className="px-6 md:px-12 py-10 md:py-16">
-
         <div className="max-w-6xl mx-auto">
 
           <a
@@ -142,13 +145,11 @@ export default async function PerfumePage({ params }) {
 
             {/* IMAGEN */}
             <div className="bg-white rounded-3xl border border-black/10 p-8 md:p-12 flex items-center justify-center">
-
               <img
                 src={product.image_url}
                 alt={`${product.name} de ${product.brand}`}
                 className="w-full max-w-md h-[420px] object-contain"
               />
-
             </div>
 
             {/* INFORMACIÓN */}
@@ -168,13 +169,15 @@ export default async function PerfumePage({ params }) {
                 {product.name}
               </h1>
 
-              <p className="mt-5 text-3xl font-semibold">
-                {price}
-              </p>
+              {/* PRECIO: SOLO SE MUESTRA SI ES MAYOR QUE 0 */}
+              {tienePrecio && (
+                <p className="mt-5 text-3xl font-semibold">
+                  {price}
+                </p>
+              )}
 
               {/* ETIQUETAS */}
               <div className="mt-6 flex flex-wrap gap-3">
-
                 <span className="rounded-full bg-white border border-black/10 px-4 py-2 text-sm">
                   {product.type}
                 </span>
@@ -186,12 +189,10 @@ export default async function PerfumePage({ params }) {
                 <span className="rounded-full bg-white border border-black/10 px-4 py-2 text-sm">
                   {product.size_ml} ml
                 </span>
-
               </div>
 
               {/* DESCRIPCIÓN */}
               <div className="mt-8">
-
                 <p className="text-sm uppercase tracking-[0.2em] text-black/40">
                   Descripción
                 </p>
@@ -199,12 +200,10 @@ export default async function PerfumePage({ params }) {
                 <p className="mt-3 text-lg leading-8 text-black/70">
                   {product.description}
                 </p>
-
               </div>
 
               {/* ENTREGA */}
               <div className="mt-8 rounded-2xl bg-white border border-black/10 p-5">
-
                 <p className="font-medium">
                   📍 Fullsense — Bucaramanga
                 </p>
@@ -212,12 +211,10 @@ export default async function PerfumePage({ params }) {
                 <p className="mt-2 text-sm text-black/60">
                   Envíos gratis en Bucaramanga y área metropolitana.
                 </p>
-
               </div>
 
               {/* DISPONIBILIDAD */}
               <div className="mt-6">
-
                 {product.available ? (
                   <p className="text-green-700 font-medium">
                     Disponible
@@ -227,7 +224,6 @@ export default async function PerfumePage({ params }) {
                     Agotado
                   </p>
                 )}
-
               </div>
 
               {/* WHATSAPP */}

@@ -234,14 +234,20 @@ export default function ProductCatalog({ perfumes }) {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {perfumesFiltrados.map((perfume) => {
-              const precioFormateado = new Intl.NumberFormat("es-CO", {
-                style: "currency",
-                currency: "COP",
-                maximumFractionDigits: 0,
-              }).format(perfume.price);
+              const tienePrecio = Number(perfume.price) > 0;
+
+              const precioFormateado = tienePrecio
+                ? new Intl.NumberFormat("es-CO", {
+                    style: "currency",
+                    currency: "COP",
+                    maximumFractionDigits: 0,
+                  }).format(perfume.price)
+                : null;
 
               const mensajeWhatsApp = encodeURIComponent(
-                `Hola, estoy interesado en ${perfume.name} de ${perfume.brand}, ${perfume.size_ml} ml, precio ${precioFormateado}.`
+                tienePrecio
+                  ? `Hola, estoy interesado en ${perfume.name} de ${perfume.brand}, ${perfume.size_ml} ml, precio ${precioFormateado}.`
+                  : `Hola, estoy interesado en ${perfume.name} de ${perfume.brand}, ${perfume.size_ml} ml. ¿Me confirmas el precio y disponibilidad?`
               );
 
               return (
@@ -306,9 +312,12 @@ export default function ProductCatalog({ perfumes }) {
                           </p>
                         </div>
 
-                        <p className="font-semibold whitespace-nowrap">
-                          {precioFormateado}
-                        </p>
+                        {/* PRECIO: SOLO SE MUESTRA SI ES MAYOR QUE 0 */}
+                        {tienePrecio && (
+                          <p className="font-semibold whitespace-nowrap">
+                            {precioFormateado}
+                          </p>
+                        )}
                       </div>
 
                       <p
