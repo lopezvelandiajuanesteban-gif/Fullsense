@@ -8,6 +8,7 @@ export default function AdminProductsPage() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
+  const [busqueda, setBusqueda] = useState("");
 
   useEffect(() => {
     const loadData = async () => {
@@ -74,6 +75,22 @@ export default function AdminProductsPage() {
     setDeletingId(null);
   };
 
+  const textoBusqueda = busqueda.toLowerCase().trim();
+
+  const productsFiltrados = products.filter((product) => {
+    if (textoBusqueda === "") {
+      return true;
+    }
+
+    const nombre = product.name?.toLowerCase() ?? "";
+    const marca = product.brand?.toLowerCase() ?? "";
+
+    return (
+      nombre.includes(textoBusqueda) ||
+      marca.includes(textoBusqueda)
+    );
+  });
+
   if (loading) {
     return (
       <main className="min-h-screen bg-[#f7f3ee] flex items-center justify-center">
@@ -113,6 +130,7 @@ export default function AdminProductsPage() {
 
       <section className="px-6 md:px-12 py-12">
         <div className="max-w-7xl mx-auto">
+
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
               <p className="text-sm uppercase tracking-[0.3em] text-black/40">
@@ -136,15 +154,94 @@ export default function AdminProductsPage() {
             </a>
           </div>
 
+          {/* BUSCADOR */}
+          {products.length > 0 && (
+            <div className="mt-10">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+
+                <div className="relative w-full md:max-w-md">
+                  <input
+                    type="text"
+                    value={busqueda}
+                    onChange={(e) => setBusqueda(e.target.value)}
+                    placeholder="Buscar por nombre o marca..."
+                    className="w-full rounded-full border border-black/15 bg-white px-5 py-3 pr-12 text-sm outline-none transition focus:border-black"
+                  />
+
+                  {busqueda ? (
+                    <button
+                      type="button"
+                      onClick={() => setBusqueda("")}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-xl text-black/40 hover:text-black transition"
+                      aria-label="Limpiar búsqueda"
+                    >
+                      ×
+                    </button>
+                  ) : (
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-black/40">
+                      <svg
+                        width="19"
+                        height="19"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                      >
+                        <circle
+                          cx="11"
+                          cy="11"
+                          r="7"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                        />
+
+                        <path
+                          d="M16.5 16.5L21 21"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </span>
+                  )}
+                </div>
+
+                <p className="text-sm text-black/45">
+                  {productsFiltrados.length === 1
+                    ? "1 perfume"
+                    : `${productsFiltrados.length} perfumes`}
+                </p>
+              </div>
+            </div>
+          )}
+
           {products.length === 0 ? (
             <div className="mt-12 rounded-3xl bg-white border border-black/10 p-10 text-center">
               <p className="text-black/50">
                 No hay productos registrados.
               </p>
             </div>
+          ) : productsFiltrados.length === 0 ? (
+            <div className="mt-10 rounded-3xl bg-white border border-black/10 p-10 text-center">
+              <p className="text-lg font-medium">
+                No encontramos ese perfume.
+              </p>
+
+              <p className="mt-2 text-sm text-black/50">
+                Prueba buscando por otro nombre o marca.
+              </p>
+
+              <button
+                type="button"
+                onClick={() => setBusqueda("")}
+                className="mt-5 text-sm underline underline-offset-4 text-black/60 hover:text-black"
+              >
+                Ver todos los perfumes
+              </button>
+            </div>
           ) : (
-            <div className="mt-10 grid gap-5">
-              {products.map((product) => {
+            <div className="mt-8 grid gap-5">
+              {productsFiltrados.map((product) => {
                 const price = new Intl.NumberFormat("es-CO", {
                   style: "currency",
                   currency: "COP",
@@ -165,18 +262,27 @@ export default function AdminProductsPage() {
                     </div>
 
                     <div className="flex-1">
-                      <p className="text-xs uppercase tracking-wider text-black/40">
+                      <p
+                        translate="no"
+                        className="notranslate text-xs uppercase tracking-wider text-black/40"
+                      >
                         {product.brand}
                       </p>
 
-                      <h2 className="mt-1 text-xl font-semibold">
+                      <h2
+                        translate="no"
+                        className="notranslate mt-1 text-xl font-semibold"
+                      >
                         {product.name}
                       </h2>
 
                       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-black/50">
                         <span>{product.type}</span>
+
                         <span>{product.category}</span>
+
                         <span>{product.size_ml} ml</span>
+
                         <span>{price}</span>
                       </div>
 
