@@ -9,6 +9,7 @@ export default function AdminProductsPage() {
   const [user, setUser] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
   const [busqueda, setBusqueda] = useState("");
+  const [updatingToggle, setUpdatingToggle] = useState(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -73,6 +74,40 @@ export default function AdminProductsPage() {
     );
 
     setDeletingId(null);
+  };
+
+  const handleToggle = async (product, field) => {
+    const toggleKey = `${product.id}-${field}`;
+    const nuevoValor = !Boolean(product[field]);
+
+    setUpdatingToggle(toggleKey);
+
+    const { error } = await supabase
+      .from("PRODUCTS")
+      .update({
+        [field]: nuevoValor,
+      })
+      .eq("id", product.id);
+
+    if (error) {
+      console.error(`Error actualizando ${field}:`, error);
+      alert("No se pudo actualizar el perfume.");
+      setUpdatingToggle(null);
+      return;
+    }
+
+    setProducts((prev) =>
+      prev.map((item) =>
+        item.id === product.id
+          ? {
+              ...item,
+              [field]: nuevoValor,
+            }
+          : item
+      )
+    );
+
+    setUpdatingToggle(null);
   };
 
   const textoBusqueda = busqueda.toLowerCase().trim();
@@ -248,6 +283,15 @@ export default function AdminProductsPage() {
                   maximumFractionDigits: 0,
                 }).format(product.price);
 
+                const nuevoActivo = Boolean(product.is_new);
+                const destacadoActivo = Boolean(product.featured);
+
+                const actualizandoNuevo =
+                  updatingToggle === `${product.id}-is_new`;
+
+                const actualizandoDestacado =
+                  updatingToggle === `${product.id}-featured`;
+
                 return (
                   <div
                     key={product.id}
@@ -299,23 +343,128 @@ export default function AdminProductsPage() {
                       </p>
                     </div>
 
-                    <div className="flex gap-3">
-                      <a
-                        href={`/admin/products/${product.id}/edit`}
-                        className="rounded-full border border-black px-5 py-2 text-sm hover:bg-black hover:text-white transition"
-                      >
-                        Editar
-                      </a>
+                    {/* ACCIONES */}
+                    <div className="w-full md:w-auto md:min-w-[230px]">
 
-                      <button
-                        onClick={() => handleDelete(product)}
-                        disabled={deletingId === product.id}
-                        className="rounded-full border border-red-600 px-5 py-2 text-sm text-red-600 hover:bg-red-600 hover:text-white transition disabled:opacity-50"
-                      >
-                        {deletingId === product.id
-                          ? "Eliminando..."
-                          : "Eliminar"}
-                      </button>
+                      {/* CONTROLES RÁPIDOS */}
+                      <div className="mb-4 rounded-2xl border border-black/10 bg-[#faf8f5] px-4 py-3">
+
+                        {/* NUEVO */}
+                        <div className="flex items-center justify-between gap-6">
+                          <div>
+                            <p className="text-sm font-medium">
+                              Nuevo
+                            </p>
+
+                            <p
+                              className={`text-xs ${
+                                nuevoActivo
+                                  ? "text-green-700"
+                                  : "text-red-600"
+                              }`}
+                            >
+                              {nuevoActivo ? "Sí" : "No"}
+                            </p>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleToggle(product, "is_new")
+                            }
+                            disabled={actualizandoNuevo}
+                            aria-pressed={nuevoActivo}
+                            aria-label={`Marcar ${product.name} como nuevo`}
+                            className={`relative h-7 w-12 shrink-0 rounded-full transition-colors duration-200 ${
+                              nuevoActivo
+                                ? "bg-green-600"
+                                : "bg-red-500"
+                            } ${
+                              actualizandoNuevo
+                                ? "cursor-wait opacity-50"
+                                : "cursor-pointer"
+                            }`}
+                          >
+                            <span
+                              className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-all duration-200 ${
+                                nuevoActivo
+                                  ? "left-6"
+                                  : "left-1"
+                              }`}
+                            />
+                          </button>
+                        </div>
+
+                        <div className="my-3 border-t border-black/10" />
+
+                        {/* DESTACADO */}
+                        <div className="flex items-center justify-between gap-6">
+                          <div>
+                            <p className="text-sm font-medium">
+                              Destacado
+                            </p>
+
+                            <p
+                              className={`text-xs ${
+                                destacadoActivo
+                                  ? "text-green-700"
+                                  : "text-red-600"
+                              }`}
+                            >
+                              {destacadoActivo ? "Sí" : "No"}
+                            </p>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleToggle(product, "featured")
+                            }
+                            disabled={actualizandoDestacado}
+                            aria-pressed={destacadoActivo}
+                            aria-label={`Destacar ${product.name}`}
+                            className={`relative h-7 w-12 shrink-0 rounded-full transition-colors duration-200 ${
+                              destacadoActivo
+                                ? "bg-green-600"
+                                : "bg-red-500"
+                            } ${
+                              actualizandoDestacado
+                                ? "cursor-wait opacity-50"
+                                : "cursor-pointer"
+                            }`}
+                          >
+                            <span
+                              className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-all duration-200 ${
+                                destacadoActivo
+                                  ? "left-6"
+                                  : "left-1"
+                              }`}
+                            />
+                          </button>
+                        </div>
+
+                      </div>
+
+                      {/* EDITAR / ELIMINAR */}
+                      <div className="flex gap-3">
+                        <a
+                          href={`/admin/products/${product.id}/edit`}
+                          className="flex-1 rounded-full border border-black px-5 py-2 text-center text-sm hover:bg-black hover:text-white transition"
+                        >
+                          Editar
+                        </a>
+
+                        <button
+                          onClick={() => handleDelete(product)}
+                          disabled={deletingId === product.id}
+                          className="flex-1 rounded-full border border-red-600 px-5 py-2 text-sm text-red-600 hover:bg-red-600 hover:text-white transition disabled:opacity-50"
+                        >
+                          {deletingId === product.id
+                            ? "Eliminando..."
+                            : "Eliminar"}
+                        </button>
+                      </div>
+
                     </div>
                   </div>
                 );
