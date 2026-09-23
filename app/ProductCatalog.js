@@ -88,9 +88,12 @@ export default function ProductCatalog({ perfumes }) {
     setBuscadorAbierto(false);
   };
 
-  const cerrarBuscadorSiEstaVacio = () => {
-    if (busqueda.trim() === "") {
+  const abrirCerrarBuscador = () => {
+    if (buscadorAbierto) {
+      setBusqueda("");
       setBuscadorAbierto(false);
+    } else {
+      setBuscadorAbierto(true);
     }
   };
 
@@ -98,12 +101,15 @@ export default function ProductCatalog({ perfumes }) {
     <>
       {/* CATEGORÍAS */}
       <section className="px-6 md:px-12 py-10 border-y border-black/10">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
+
           <p className="mb-5 text-center text-xs uppercase tracking-[0.3em] text-black/40">
             Explora por categoría
           </p>
 
-          <div className="flex md:flex-wrap overflow-x-auto md:overflow-visible justify-start md:justify-center gap-3 pb-2 md:pb-0">
+          {/* FILTROS + LUPA */}
+          <div className="flex items-center justify-start md:justify-center gap-3 overflow-x-auto pb-2 md:pb-0">
+
             {categorias.map((categoria) => (
               <button
                 key={categoria}
@@ -118,103 +124,156 @@ export default function ProductCatalog({ perfumes }) {
                 {categoria}
               </button>
             ))}
+
+            {/* LUPA / CERRAR */}
+            <button
+              type="button"
+              onClick={abrirCerrarBuscador}
+              className={`shrink-0 flex h-11 w-11 items-center justify-center rounded-full border transition duration-300 ${
+                buscadorAbierto
+                  ? "border-black bg-black text-white"
+                  : "border-black/20 bg-white text-black hover:bg-black hover:text-white"
+              }`}
+              aria-label={
+                buscadorAbierto
+                  ? "Cerrar buscador"
+                  : "Buscar perfume"
+              }
+              title={
+                buscadorAbierto
+                  ? "Cerrar buscador"
+                  : "Buscar perfume"
+              }
+            >
+              {buscadorAbierto ? (
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6 6L18 18"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                  />
+
+                  <path
+                    d="M18 6L6 18"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  width="19"
+                  height="19"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="11"
+                    cy="11"
+                    r="7"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                  />
+
+                  <path
+                    d="M16.5 16.5L21 21"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              )}
+            </button>
+
           </div>
+
+          {/* BUSCADOR DESPLEGABLE */}
+          <div
+            className={`overflow-hidden transition-all duration-300 ease-out ${
+              buscadorAbierto
+                ? "max-h-24 opacity-100 mt-5"
+                : "max-h-0 opacity-0 mt-0"
+            }`}
+          >
+            <div className="mx-auto max-w-xl">
+              <div className="relative">
+                <input
+                  autoFocus={buscadorAbierto}
+                  type="text"
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                  placeholder="Buscar por nombre o marca..."
+                  className="w-full rounded-full border border-black/15 bg-white px-6 py-3.5 pr-12 text-sm outline-none shadow-sm transition focus:border-black focus:shadow-md"
+                />
+
+                {busqueda ? (
+                  <button
+                    type="button"
+                    onClick={() => setBusqueda("")}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full text-lg text-black/40 hover:bg-black/[0.05] hover:text-black transition"
+                    aria-label="Limpiar búsqueda"
+                  >
+                    ×
+                  </button>
+                ) : (
+                  <span className="absolute right-5 top-1/2 -translate-y-1/2 text-black/35">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <circle
+                        cx="11"
+                        cy="11"
+                        r="7"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                      />
+
+                      <path
+                        d="M16.5 16.5L21 21"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
       {/* CATÁLOGO */}
-      <section id="catalogo" className="px-6 md:px-12 py-20 md:py-24">
-        <div className="mb-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div>
-              <p className="text-sm uppercase tracking-[0.3em] text-black/50">
-                {filtro === "Todos" ? "Selección" : filtro}
-              </p>
+      <section
+        id="catalogo"
+        className="px-6 md:px-12 py-10 md:py-12"
+      >
 
-              <h2 className="mt-3 text-4xl md:text-5xl font-semibold">
-                Nuestros perfumes
-              </h2>
-            </div>
-
-            <div className="flex items-center gap-3">
-              {buscadorAbierto ? (
-                <div className="relative w-full md:w-[360px]">
-                  <input
-                    autoFocus
-                    type="text"
-                    value={busqueda}
-                    onChange={(e) => setBusqueda(e.target.value)}
-                    onBlur={cerrarBuscadorSiEstaVacio}
-                    placeholder="Buscar por nombre o marca..."
-                    className="w-full rounded-full border border-black/20 bg-white px-5 py-3 pr-12 outline-none transition focus:border-black"
-                  />
-
-                  {busqueda ? (
-                    <button
-                      type="button"
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => {
-                        setBusqueda("");
-                        setBuscadorAbierto(false);
-                      }}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-xl text-black/40 hover:text-black transition"
-                      aria-label="Limpiar búsqueda"
-                    >
-                      ×
-                    </button>
-                  ) : (
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-black/40">
-                      ⌕
-                    </span>
-                  )}
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setBuscadorAbierto(true)}
-                  className="flex h-12 w-12 items-center justify-center rounded-full border border-black/20 bg-white hover:bg-black hover:text-white transition"
-                  aria-label="Buscar perfume"
-                  title="Buscar perfume"
-                >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <circle
-                      cx="11"
-                      cy="11"
-                      r="7"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                    />
-
-                    <path
-                      d="M16.5 16.5L21 21"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
-              )}
-            </div>
-          </div>
-
-          <div className="mt-5 flex justify-end">
-            <p className="text-sm text-black/45">
-              {perfumesFiltrados.length === 1
-                ? "1 perfume"
-                : `${perfumesFiltrados.length} perfumes`}
-            </p>
-          </div>
+        {/* CONTADOR */}
+        <div className="mb-6 flex justify-end">
+          <p className="text-sm text-black/40">
+            {perfumesFiltrados.length === 1
+              ? "1 perfume"
+              : `${perfumesFiltrados.length} perfumes`}
+          </p>
         </div>
 
         {perfumesFiltrados.length === 0 ? (
           <div className="py-16 text-center">
+
             <p className="text-lg font-medium">
               No encontramos perfumes con esos criterios.
             </p>
@@ -230,11 +289,14 @@ export default function ProductCatalog({ perfumes }) {
             >
               Ver todos los perfumes
             </button>
+
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
             {perfumesFiltrados.map((perfume) => {
-              const tienePrecio = Number(perfume.price) > 0;
+              const tienePrecio =
+                Number(perfume.price) > 0;
 
               const precioFormateado = tienePrecio
                 ? new Intl.NumberFormat("es-CO", {
@@ -244,22 +306,27 @@ export default function ProductCatalog({ perfumes }) {
                   }).format(perfume.price)
                 : null;
 
-              const mensajeWhatsApp = encodeURIComponent(
-                tienePrecio
-                  ? `Hola, estoy interesado en ${perfume.name} de ${perfume.brand}, ${perfume.size_ml} ml, precio ${precioFormateado}.`
-                  : `Hola, estoy interesado en ${perfume.name} de ${perfume.brand}, ${perfume.size_ml} ml. ¿Me confirmas el precio y disponibilidad?`
-              );
+              const mensajeWhatsApp =
+                encodeURIComponent(
+                  tienePrecio
+                    ? `Hola, estoy interesado en ${perfume.name} de ${perfume.brand}, ${perfume.size_ml} ml, precio ${precioFormateado}.`
+                    : `Hola, estoy interesado en ${perfume.name} de ${perfume.brand}, ${perfume.size_ml} ml. ¿Me confirmas el precio y disponibilidad?`
+                );
 
               return (
                 <article
                   key={perfume.id}
                   className="group flex h-full flex-col overflow-hidden rounded-3xl border border-black/5 bg-white transition duration-300 hover:-translate-y-1 hover:shadow-xl"
                 >
+
                   <Link
                     href={`/perfumes/${perfume.slug}`}
                     className="flex flex-1 flex-col"
                   >
+
+                    {/* IMAGEN */}
                     <div className="relative h-80 bg-[#e9e1d7] flex items-center justify-center p-6 cursor-pointer">
+
                       <img
                         src={perfume.image_url}
                         alt={`${perfume.name} de ${perfume.brand}`}
@@ -268,6 +335,7 @@ export default function ProductCatalog({ perfumes }) {
 
                       {/* DISPONIBILIDAD */}
                       <div className="absolute top-4 left-4">
+
                         {perfume.available ? (
                           <span className="rounded-full bg-white/90 px-3 py-1.5 text-xs font-medium text-green-700 border border-green-700/10">
                             Disponible
@@ -277,22 +345,31 @@ export default function ProductCatalog({ perfumes }) {
                             Agotado
                           </span>
                         )}
+
                       </div>
 
                       {/* NUEVO */}
                       {perfume.is_new && (
                         <div className="absolute top-4 right-4">
                           <span className="inline-flex items-center gap-2 rounded-full bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-md ring-1 ring-green-700/20">
+
                             <span className="h-2 w-2 rounded-full bg-white"></span>
+
                             Nuevo
+
                           </span>
                         </div>
                       )}
+
                     </div>
 
+                    {/* INFORMACIÓN */}
                     <div className="flex flex-1 flex-col p-6 pb-0 cursor-pointer">
+
                       <div className="flex items-start justify-between gap-4">
+
                         <div className="min-w-0">
+
                           <p className="text-xs uppercase tracking-wider text-black/40">
                             {perfume.type}
                           </p>
@@ -310,16 +387,19 @@ export default function ProductCatalog({ perfumes }) {
                           >
                             {perfume.brand}
                           </p>
+
                         </div>
 
-                        {/* PRECIO: SOLO SE MUESTRA SI ES MAYOR QUE 0 */}
+                        {/* PRECIO */}
                         {tienePrecio && (
                           <p className="font-semibold whitespace-nowrap">
                             {precioFormateado}
                           </p>
                         )}
+
                       </div>
 
+                      {/* DESCRIPCIÓN */}
                       <p
                         className="mt-4 text-sm leading-6 text-black/60 overflow-hidden"
                         style={{
@@ -332,22 +412,34 @@ export default function ProductCatalog({ perfumes }) {
                       </p>
 
                       <div className="mt-auto pt-5">
+
                         <div className="flex items-center justify-between text-sm text-black/50">
-                          <span>{perfume.category}</span>
+
+                          <span>
+                            {perfume.category}
+                          </span>
 
                           {perfume.size_ml && (
-                            <span>{perfume.size_ml} ml</span>
+                            <span>
+                              {perfume.size_ml} ml
+                            </span>
                           )}
+
                         </div>
 
                         <p className="mt-5 text-sm font-medium">
                           Ver detalles →
                         </p>
+
                       </div>
+
                     </div>
+
                   </Link>
 
+                  {/* WHATSAPP */}
                   <div className="px-6 pb-6">
+
                     {perfume.available ? (
                       <a
                         href={`https://wa.me/573151878609?text=${mensajeWhatsApp}`}
@@ -362,12 +454,16 @@ export default function ProductCatalog({ perfumes }) {
                         Producto agotado
                       </div>
                     )}
+
                   </div>
+
                 </article>
               );
             })}
+
           </div>
         )}
+
       </section>
     </>
   );
